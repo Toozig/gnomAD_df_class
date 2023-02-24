@@ -66,7 +66,7 @@ class GnomAD_df:
     def remove_non_peak_variants(self):
         decs="removing variants outside of peak interval"
         
-        if self.__check_if_filter_exists(desc):
+        if self.__check_if_filter_exists(decs):
             self.__filters_description.append("removing variants outside of peak interval")
             self.__filter_functions.append(self.__remove_non_peak_variants)
         return self
@@ -80,7 +80,7 @@ class GnomAD_df:
         """
         decs='removed unkwon genotypes (e.g \"./.\")'
         
-        if self.__check_if_filter_exists(desc):
+        if self.__check_if_filter_exists(decs):
             self.__filters_description.append('removed unkwon genotypes (e.g \"./.\")')
             self.__filter_functions.append(self.__remove_unknow)
         return self
@@ -115,13 +115,13 @@ class GnomAD_df:
         Return True if filter was not applied
         """
         if description in self.__filters_description:
-            print(f"{description.split('(')[0]}" already applied)
+            print(f"{description.split('(')[0]} already applied")
             return False
         return True
         
         
     
-    def filter_dp(self, dp_t:float) -> GnomAD_df:
+    def filter_dp(self, dp_t:float):
         """
         Fiter the variants (replace the GT with NaN) according to a given threshold (dp_t)
         """
@@ -138,7 +138,7 @@ class GnomAD_df:
     def ___filter_AF_remove_unknown(self, af_t:float):
         self.__cur_df = self.__cur_df[(self.__cur_df.AF <= af_t) | (self.__cur_df.AF.isna())]
 
-    def ___filter_AF(self, float: af_t):
+    def ___filter_AF(self,af_t:float):
         self.__cur_df = self.__cur_df[(self.__cur_df.AF <= af_t)]
 
     def filter_AF(self, af_t: float,remove_unkwon=False):
@@ -156,7 +156,7 @@ class GnomAD_df:
                 self.__filter_functions.append(lambda :self.___filter_AF(af_t))
         return self
 
-    def samples_filter(self,sample_list: list[str], appened=True):
+    def samples_filter(self,sample_list, appened=True):
         """
         Filter the variants dataframe to a given set of samples.
         If appened is False, remove all previous given samples of filteration
