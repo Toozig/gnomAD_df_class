@@ -127,7 +127,7 @@ class GnomAD_df:
         """
         desc = f"Removing variants with reading depth {dp_t} or below"
         if self.__check_if_filter_exists(desc):
-            self.__filters_description.append()
+            self.__filters_description.append(desc)
             self.__filter_functions.append(lambda: self.__filter_dp(dp_t))
         return self
 
