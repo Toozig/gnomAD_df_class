@@ -263,14 +263,14 @@ class GnomAD_df:
                 df = df.replace(f"{i}|{j}", np.nan)
         return df
 
-    def bool_variant_df(self):
+    def bool_variant_df(self, verbos=True):
         """
         returns a boolean table of samples VS variants.
         True if the variant exist in the sample.
         NOTICE- THIS APPLY REMOVE PHASING FILTER ON DF
         """
         self.__remove_phasing()
-        self.__apply_filters()
+        self.__apply_filters(verbos)
         df = self.__remove_reference()
         gt = df[[i for i in df.columns if i.endswith('GT')]].notna()
         gt.columns = [i.replace(':GT','') for i in gt.columns ]
