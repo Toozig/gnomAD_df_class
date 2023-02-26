@@ -147,7 +147,7 @@ class GnomAD_df:
         If remove_unkown is True, remove variants with no record on gnomAD
         """
         description = f"Removing variants with allele frequency above {af_t}"
-        description += "and variants with no record on gnomAD" if remove_unkwon else ""
+        description += " and variants with no record on gnomAD" if remove_unkwon else ""
         if self.__check_if_filter_exists(description):
             self.__filters_description.append(description)
             if not remove_unkwon:
@@ -274,7 +274,7 @@ class GnomAD_df:
         df = self.__remove_reference()
         gt = df[[i for i in df.columns if i.endswith('GT')]].notna()
         gt.columns = [i.replace(':GT','') for i in gt.columns ]
-        return pd.concat([gt,df[['AF','INTERVAL_ID']]], axis=1)
+        return pd.concat([df[['AF','INTERVAL_ID']],gt], axis=1)
     
     
     
@@ -363,6 +363,13 @@ class GnomAD_df:
         self.__original_df = main_df
         self.reset_table()
         return self
+    
+    def count_sample_variants(self,verbos=True):
+        """
+        Counts the amount of variant each sample have.
+        """
+        bool_df = self.bool_variant_df(verbos=verbos)
+        return bool_df.drop(columns=['AF','INTERVAL_ID']).sum()
     
     def save_df(self,save_format, path, original=False):
         """
