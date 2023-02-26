@@ -121,7 +121,7 @@ class GnomAD_df:
         
         
     
-    def filter_dp(self, dp_t:float):
+    def filter_DP(self, dp_t:float):
         """
         Fiter the variants (replace the GT with NaN) according to a given threshold (dp_t)
         """
