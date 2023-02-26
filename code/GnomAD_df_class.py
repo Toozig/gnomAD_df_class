@@ -188,12 +188,16 @@ class GnomAD_df:
         """
         if i >= len(self.__filters_description):
             print("Filter does not exist")
-            return
+            return self
+        print(f"self.__filters_description len(o): {len(self.__filters_description)}")
         del self.__filters_description[i]
         del self.__filter_functions[i]
-        if i < self.__applied_filter_index:
+        print(f"self.__filters_description len (f): {len(self.__filters_description)}")
+        if i <= self.__applied_filter_index:
             self.__cur_df = self.__original_df.copy()
-        
+            self.f_phasing = False
+            self.__applied_filter_index = 0
+        return self
 
     def reset_table(self, remove_phased_gt=True, remove_unkown=True, only_peak_variants=True):
         """
@@ -223,15 +227,15 @@ class GnomAD_df:
         
     def __apply_filters(self, verbos=True):
         max_index = len(self.__filters_description)
-        if verbos:
-            print("Filtering samples")
-        self.__sample_filter()
+        # filter samples only if there are samples in the list
+        if len(self.__filter_samples):
+            if verbos:
+                print("Filtering samples")
+            self.__sample_filter()
         if verbos:
             for i in range(self.__applied_filter_index):
-                print(self.__filters_description[i])
         for i in range(self.__applied_filter_index, max_index):
             if verbos:
-                print(self.__filters_description[i])
             self.__filter_functions[i]()
         self.__applied_filter_index = max_index
 
@@ -389,5 +393,3 @@ class GnomAD_df:
         return GnomAD_df(new_df)
     
     
-
-                      
