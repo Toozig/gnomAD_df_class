@@ -50,7 +50,7 @@ class GnomAD_df:
         return self.__peak_df
     
     def __open_table(self, path):
-        df = pd.read_parquet(path).fillna(value=np.nan)
+        df = pd.read_parquet(path).fillna(value=np.nan).replace('0/0',np.nan).replace('0|0',np.nan)
         interval = df.INTERVAL_ID.copy()
         df = df.drop(columns='INTERVAL_ID')
         df.insert(0,'INTERVAL_ID',interval)
