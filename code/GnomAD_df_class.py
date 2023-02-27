@@ -57,13 +57,14 @@ class GnomAD_df:
         return df
 
     def __remove_non_peak_variants(self):
-        """
-        remove variants if they are not in a peak
-        """
+
         self.__cur_df = self.__cur_df.replace('.', np.nan)
         self.__cur_df = self.__cur_df[~self.__cur_df.INTERVAL_ID.isna()]
 
     def remove_non_peak_variants(self):
+        """
+        remove variants if they are not in a peak
+        """
         decs="removing variants outside of peak interval"
         
         if self.__check_if_filter_exists(decs):
@@ -237,6 +238,7 @@ class GnomAD_df:
             if verbos:
                 print(self.__filters_description[i])
             self.__filter_functions[i]()
+        print("done")
         self.__applied_filter_index = max_index
 
 
