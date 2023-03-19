@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 class GnomAD_df:
         
         
@@ -137,10 +138,10 @@ class GnomAD_df:
             self.__cur_df.loc[self.__cur_df[sample + ':DP'] <= dp_t, sample + ':GT'] = np.nan
 
     def ___filter_AF_remove_unknown(self, af_t:float):
-        self.__cur_df = self.__cur_df[(self.__cur_df.AF <= af_t) | (self.__cur_df.AF.isna())]
+        self.__cur_df = self.__cur_df[(self.__cur_df.NEW_AF <= af_t) | (self.__cur_df.NEW_AF.isna())]
 
     def ___filter_AF(self,af_t:float):
-        self.__cur_df = self.__cur_df[(self.__cur_df.AF <= af_t)]
+        self.__cur_df = self.__cur_df[(self.__cur_df.NEW_AF <= af_t)]
 
     def filter_AF(self, af_t: float,remove_unkwon=False):
         """
@@ -157,23 +158,25 @@ class GnomAD_df:
                 self.__filter_functions.append(lambda :self.___filter_AF(af_t))
         return self
 
-    def samples_filter(self,sample_list, appened=True):
+    def filter_samples(self,sample_list, appened=True):
         """
         Filter the variants dataframe to a given set of samples.
         If appened is False, remove all previous given samples of filteration
 
         """
         if appened:
-            self.filter_samples += sample_list
+            self.__filter_samples += sample_list
         else:
-            self.filter_samples = sample_list
+            self.__filter_samples = sample_list
         return self
 
     def __sample_filter(self):
         to_remove_samples = [i for i in self.__samples if i in self.__filter_samples]
         drop_cols = []
         for i in to_remove_samples:
-            self.__cur_df = self.__cur_df.drop(columns=[f'{i}:GT', f'{i}:DP'])
+            to_drop = [f'{i}:GT', f'{i}:DP']
+            if to_drop[0] in self.__cur_df.columns and  to_drop[1] in self.__cur_df.columns:
+                self.__cur_df = self.__cur_df.drop(columns=[f'{i}:GT', f'{i}:DP'])
 
     def print_filters(self):
         """
@@ -276,7 +279,8 @@ class GnomAD_df:
         df = self.__remove_reference()
         gt = df[[i for i in df.columns if i.endswith('GT')]].notna()
         gt.columns = [i.replace(':GT','') for i in gt.columns ]
-        return pd.concat([df[['AF','INTERVAL_ID']],gt], axis=1)
+        
+        return pd.concat([df[['NEW_AF','INTERVAL_ID']],gt], axis=1)
     
     
     
@@ -371,7 +375,9 @@ class GnomAD_df:
         Counts the amount of variant each sample have.
         """
         bool_df = self.bool_variant_df(verbos=verbos)
-        return bool_df.drop(columns=['AF','INTERVAL_ID']).sum()
+        bool_df[bool_df.INTERVAL_ID.notna()  & bool_df.NEW_AF.notna() ]
+        result = bool_df[bool_df.INTERVAL_ID.notna() & bool_df.NEW_AF.notna()]
+        return result.drop(columns=['NEW_AF','INTERVAL_ID']).sum()
     
     def save_df(self,save_format, path, original=False):
         """

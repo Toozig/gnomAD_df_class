@@ -30,7 +30,7 @@ echo "start bcftools for $CHROM"
 # R - regions file, takes variants that are on the regions described in the given file
 # f - the output format 
 # last variable is the location of the vcf file. We are using the file which is stored on amazon cloud
-bcftools query -o data/${CHROM}_gnomAD_AF.tsv -i 'FILTER="PASS"' -R data/peak_bcftools_format.tsv -f "%CHROM\t%POS\t%REF\t%ALT\t%AF\t\n" https://gnomad-public-us-east-1.s3.amazonaws.com/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.sites.${CHROM}.vcf.bgz
+bcftools query -o data/${CHROM}_gnomAD_AF_19_03.tsv -R data/peak_bcftools_format.tsv -f "%CHROM\t%POS\t%REF\t%ALT\t%AF\t%AF_popmax\t%FILTER\n" https://gnomad-public-us-east-1.s3.amazonaws.com/release/3.1.2/vcf/genomes/gnomad.genomes.v3.1.2.sites.${CHROM}.vcf.bgz
 
 check_exit_code "module bcftools"
 echo "DONE $CHROM"
